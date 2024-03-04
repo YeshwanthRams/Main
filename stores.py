@@ -72,20 +72,6 @@ class M: #Matrix
 
         return M(final)
 
-    def __mul__(self,nmat):
-        if not isinstance(nmat,M):
-            if not len(nmat) > 0:
-                print("Nmat is Empty")
-                return
-            if len(self.mat[0]) > len(nmat):
-                nmat = nmat + [1]*(len(self.mat[0]) - len(nmat))
-            final = []
-# ?
-            for n in range(len(self.mat)):
-                final.append([])
-                for m in range(len(self.mat[n])):
-                    final[n].append(self.mat[n][m] + nmat[m])
-            return M(final)
 
     def __repr__(self):
         return  "\n".join([" ".join(map(str,n)) for n in self.mat])
