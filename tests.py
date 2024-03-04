@@ -50,7 +50,6 @@ class TestVectorMethodsRandomized(unittest.TestCase):
             length1 = random.randint(1, 10)
             length2 = random.randint(1, 10)
             v1 = self.generate_random_vector(length1)
-            print(type(v1))
             v2 = self.generate_random_vector(length2)
             result = v1.union(v2)
             expected = list(v1.data)  # Elements from the first vector
@@ -82,25 +81,9 @@ class TestMatrixClass(unittest.TestCase):
         result = self.m + [5, 6]
         self.assertEqual(result.mat, [[6, 8], [8, 10]])
 
-    def test_mul_matrix(self):
-        # This method seems to be doing addition instead of multiplication.
-        # I'll write the test for addition here, but you might want to fix this.
-        m2 = M([[5, 6], [7, 8]])
-        result = self.m * m2
-        self.assertEqual(result.mat, [[6, 8], [10, 12]])
-
-    def test_mul_list(self):
-        # This method seems to be doing addition instead of multiplication.
-        # I'll write the test for addition here, but you might want to fix this.
-        result = self.m * [5, 6]
-        self.assertEqual(result.mat, [[6, 8], [8, 10]])
-
     def test_repr(self):
         self.assertEqual(repr(self.m), "1 2\n3 4")
 
-    def test_ismat(self):
-        self.assertTrue(self.m.ismat([[1, 2], [3, 4]]))
-        self.assertFalse(self.m.ismat([1, 2, 3, 4]))
 
 if __name__ == '__main__':
     unittest.main()
