@@ -35,8 +35,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup GitHub CLI
-        uses: actions/setup-cli@v1
-      - name: Create Pull Request
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
