@@ -4,6 +4,10 @@ on:
   push: 
     branches: [master]
   
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -24,3 +28,27 @@ jobs:
 
     - name: Run tests
       run: tests.py
+      continue-on-error: true
+
+  create_pull_request:
+    if: ${{ failure() }}
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Create Pull Request
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Check if the branch already has an open pull request
+        if ! gh pr list --repo ${{ github.repository }} --head ${{ github.actor }}:${{ github.ref }} | grep -q ${{ github.ref }}; then
+          # Create a new branch for the pull request
+          NEW_BRANCH="failed-tests-${{ github.actor }}-${{ github.run_number }}"
+          git checkout -b $NEW_BRANCH
+          git push origin $NEW_BRANCH
+          # Create a new pull request
+          gh pr create --title "Tests Failed for ${{ github.actor }}'s changes" \
+                       --body "Tests failed for the recent push. Please review and fix the issues." \
+                       --head $NEW_BRANCH \
+                       --base master
+        fi
