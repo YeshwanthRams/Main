@@ -13,42 +13,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out repo code
-    - uses: actions/checkout@v4
+      - name: Check out repo code
+        uses: actions/checkout@v4
 
-    - name: Setup Python Env
-    - uses: actions/setup-python@v5
-      with:
-        python-version: '3.x'
+      - name: Setup Python Env
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
 
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
 
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-
-    - name: Run tests
-      run: tests.py
-      continue-on-error: true
+      - name: Run tests
+        run: python tests.py
+        continue-on-error: true
 
   create_pull_request:
     if: ${{ failure() }}
     needs: test
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Create Pull Request
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        # Check if the branch already has an open pull request
-        if ! gh pr list --repo ${{ github.repository }} --head ${{ github.actor }}:${{ github.ref }} | grep -q ${{ github.ref }}; then
-          # Create a new branch for the pull request
-          NEW_BRANCH="failed-tests-${{ github.actor }}-${{ github.run_number }}"
-          git checkout -b $NEW_BRANCH
-          git push origin $NEW_BRANCH
-          # Create a new pull request
-          gh pr create --title "Tests Failed for ${{ github.actor }}'s changes" \
-                       --body "Tests failed for the recent push. Please review and fix the issues." \
-                       --head $NEW_BRANCH \
-                       --base master
-        fi
+      - uses: actions/checkout@v4
+      - name: Setup GitHub CLI
+        uses: actions/setup-cli@v1
+      - name: Create Pull Request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Check if the branch already has an open pull request
+          if ! gh pr list --repo ${{ github.repository }} --head ${{ github.actor }}:${{ github.ref }} | grep -q ${{ github.ref }}; then
+            # Create a new branch for the pull request
+            NEW_BRANCH="failed-tests-${{ github.actor }}-${{ github.run_number }}"
+            git checkout -b $NEW_BRANCH
+            git push origin $NEW_BRANCH
+            # Create a new pull request
+            gh pr create --title "Tests Failed for ${{ github.actor }}'s changes" \
+                         --body "Tests failed for the recent push. Please review and fix the issues." \
+                         --head $NEW_BRANCH \
+                         --base master
+          fi
