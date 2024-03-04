@@ -27,7 +27,6 @@ jobs:
 
       - name: Run tests
         run: python tests.py
-        continue-on-error: true
 
   create_pull_request:
     if: ${{ failure() }}
