@@ -1,37 +1,47 @@
 class v: #Vector
     def __init__(self,data):
-        self.data = data 
+        self.data = data
 
     def __add__(self,ndata):
-        return v([n+m for n,m in zip(self.data,ndata.data)])
-    
+        if isinstance(ndata,list): return v([n+m for n,m in zip(self,ndata)])
+        return v([n+m for n,m in zip(self,ndata)])
+
     def __sub__(self,ndata):
-        return v([n-m for n,m in zip(self.data,ndata.data)])
+        if isinstance(ndata,list): return v([n-m for n,m in zip(self,ndata)])
+        return v([n-m for n,m in zip(self,ndata)])
 
     def __mul__(self,ndata):
-        return v([n*m for n,m in zip(self.data, ndata.data)])
-    
+        if isinstance(ndata,list): return v([n*m for n,m in zip(self,ndata)])
+        return v([n*m for n,m in zip(self, ndata)])
+
+    def __truediv__(self,ndata):
+        if isinstance(ndata,list): return v([n/m for n,m in zip(self,ndata)])
+        return v([n/m for n,m in zip(self, ndata)])
+
     def __iter__(self):
         return iter(self.data)
-    
+
     def __len__(self):
         return len(self.data)
-    
+
     def intersection(self,ndata):
-        return v([n for n in self.data if n in ndata.data] + [n for n in ndata.data if n in self.data])
+        if isinstance(ndata,list): return v([n for n in ndata if n in self])
+        return v([n for n in ndata if n in self])
 
     def union(self,ndata):
-        one = [n for n in self.data]
-        two  = [n for n in ndata.data if n not in one]
+        final = self.data[:]
 
-        return v(one + two)
+        for n in ndata:
+            if n not in final: final.append(n)
+
+        return v(sorted(final))
 
     def dot(self,ndata):
         if len(self.data) != len(ndata.data) or len(ndata) == 0:
             print('Undefined')
-            return 
-        
-        return sum([n*m for n,m in zip(self.data, ndata.data)])
+            return
+
+        return sum([n*m for n,m in zip(self.data, ndata)])
 
 
 class M: #Matrix
