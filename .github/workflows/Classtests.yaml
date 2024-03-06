@@ -27,3 +27,28 @@ jobs:
 
       - name: Run tests
         run: python tests.py
+
+  create_branch_and_pull_request:
+    if: ${{ failure() }}
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup GitHub CLI
+        uses: github/super-linter@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create new branch and push if tests fail
+        run: |
+          NEW_BRANCH="failed-tests-${{ github.actor }}-${{ github.run_number }}"
+          git checkout -b $NEW_BRANCH
+          git push origin $NEW_BRANCH
+
+          
+          gh pr create --title "Tests Failed for ${{ github.actor }}'s changes" \
+                       --body "Tests failed for the recent push. Please review and fix the issues." \
+                       --head $NEW_BRANCH \
+                       --base master
