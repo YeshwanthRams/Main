@@ -42,7 +42,7 @@ class TestVectorMethodsRandomized(unittest.TestCase):
             v1 = self.generate_random_vector(length1)
             v2 = self.generate_random_vector(length2)
             result = v1.intersection(v2)
-            expected = [n for n in v1.data if n in v2.data] + [n for n in v2.data if n in v1.data]
+            expected = [n for n in v1.data if n in v2.data]
             self.assertEqual(result.data, expected, f"Failed for intersection of {v1.data} and {v2.data}")
 
     def test_union_random(self):
@@ -51,6 +51,8 @@ class TestVectorMethodsRandomized(unittest.TestCase):
             length2 = random.randint(1, 10)
             v1 = self.generate_random_vector(length1)
             v2 = self.generate_random_vector(length2)
+            print(f"v1 : {v1.data}")
+            print(f"v2 : {v2.data}")
             result = v1.union(v2)
             expected = list(v1.data)  # Elements from the first vector
             expected += [n for n in v2.data if n not in expected]  # Non-duplicate elements from the second vector
