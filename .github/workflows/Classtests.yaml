@@ -1,8 +1,7 @@
 name: Math Class tests
 
 on:
-  push: 
-    branches: [master]
+  push
   
 permissions:
   contents: write
