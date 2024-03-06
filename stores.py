@@ -26,15 +26,13 @@ class v: #Vector
 
     def intersection(self,ndata):
         if isinstance(ndata,list): return v([n for n in ndata if n in self])
-        return v([n for n in self if n in ndata])
+        return v([n for n in ndata if n in self])
 
     def union(self,ndata):
         final = self.data[:]
 
-        final += [n for n in ndata if n not in self]
-
-        # for n in ndata:
-        #     if n not in final: final.append(n)
+        for n in ndata:
+            if n not in final: final.append(n)
 
         return v(sorted(final))
 
