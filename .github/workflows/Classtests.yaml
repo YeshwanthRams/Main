@@ -1,15 +1,14 @@
 name: Math Class tests
 
 on:
-  push: 
-    branches: [master]
+  push
   
 permissions:
   contents: write
   pull-requests: write
 
 jobs:
-  test:
+  Vtest:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,12 +24,31 @@ jobs:
         run: |
           python -m pip install --upgrade pip
 
-      - name: Run tests
-        run: python tests.py
+      - name: Run Vector tests
+        run: python test_v.py
+  
+  Mtest:
+    runs-on: ubuntu-latest
 
-  create_branch_and_pull_request:
-    if: ${{ failure() }}
-    needs: test
+    steps:
+      - name: Check out repo code
+        uses: actions/checkout@v4
+
+      - name: Setup Python Env
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: Run Matrix tests
+        run: python test_M.py
+
+  create_branch_and_pull_request_v:
+    if: failure() && github.ref == 'refs/heads/master'
+    needs: Vtest
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -40,6 +58,22 @@ jobs:
 
       - name: Create new branch for failed test code
         run: |
-          NEW_BRANCH="failed-tests-${{ github.actor }}-${{ github.run_number }}"
+          NEW_BRANCH="failed-Vectortests-${{ github.actor }}-${{ github.run_number }}"
+          git checkout -b $NEW_BRANCH
+          git push origin $NEW_BRANCH
+  
+  create_branch_and_pull_request_M:
+    if: failure() && github.ref == 'refs/heads/master'
+    needs: Mtest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create new branch for failed test code
+        run: |
+          NEW_BRANCH="failed-Matrixtests-${{ github.actor }}-${{ github.run_number }}"
           git checkout -b $NEW_BRANCH
           git push origin $NEW_BRANCH
