@@ -45,3 +45,35 @@ jobs:
 
       - name: Run Matrix tests
         run: python test_M.py
+
+  create_branch_and_pull_request_v:
+    if: failure() && github.ref == 'refs/heads/master'
+    needs: Vtest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create new branch for failed test code
+        run: |
+          NEW_BRANCH="failed-Vectortests-${{ github.actor }}-${{ github.run_number }}"
+          git checkout -b $NEW_BRANCH
+          git push origin $NEW_BRANCH
+  
+  create_branch_and_pull_request_M:
+    if: failure() && github.ref == 'refs/heads/master'
+    needs: Mtest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create new branch for failed test code
+        run: |
+          NEW_BRANCH="failed-Matrixtests-${{ github.actor }}-${{ github.run_number }}"
+          git checkout -b $NEW_BRANCH
+          git push origin $NEW_BRANCH
