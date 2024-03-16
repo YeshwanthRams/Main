@@ -93,8 +93,32 @@ class M: #Matrix
         return M(final)
 
 
+    def __mul__(self,nmat):
+        if len(self.mat[0]) != len(nmat.mat):
+            print('Martices are not compatible for Multiplication')
+            return
+        
+        final = []
+
+        for n in range(len(self)): # To move rows in A
+            f = []
+            for m in range(len(nmat.mat[0])): # To move columns in B
+                c = 0
+                for k in range(len(nmat)): # To interate through column elements
+                    c += self.mat[n][k] * nmat.mat[k][m]        
+                f.append(c)
+            final.append(f)
+        
+        # OneLiner ⬇️
+        # final =  [[sum([self.mat[n][k] * nmat.mat[k][m] for k in range(len(nmat))]) for m in range(len(nmat.mat[0]))] for n in range(len(self))]
+
+        return M(final)
+
     def __repr__(self):
         return  "\n".join([" ".join(map(str,n)) for n in self.mat])
+
+    def __len__(self):
+        return len(self.mat)
 
     def ismat(self,mat):
         if len(mat) > 1:

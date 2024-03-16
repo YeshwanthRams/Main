@@ -25,6 +25,14 @@ class TestMatrixClass(unittest.TestCase):
         result = self.m + [5, 6]
         self.assertEqual(result.mat, [[6, 8], [8, 10]])
 
+    def test_mul_matrix(self):
+        # Assume M supports matrix multiplication via the '*' operator
+        m2 = M([[5, 6], [7, 8]])
+        result = self.m * m2
+        # The expected result of multiplying [[1, 2], [3, 4]] with [[5, 6], [7, 8]]
+        # is [[19, 22], [43, 50]]
+        self.assertEqual(result.mat, [[19, 22], [43, 50]])
+
     def test_repr(self):
         self.assertEqual(repr(self.m), "1 2\n3 4")
 
