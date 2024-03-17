@@ -58,8 +58,6 @@ class M: #Matrix
     def __init__(self,mat):
         self.mat = mat if self.ismat(mat) else None
 
-    def __iter__(self):
-        return iter(self.mat)
 
     def __add__(self,nmat):
         if not isinstance(nmat,M):
@@ -92,7 +90,6 @@ class M: #Matrix
 
         return M(final)
 
-
     def __mul__(self,nmat):
         if len(self.mat[0]) != len(nmat.mat):
             print('Martices are not compatible for Multiplication')
@@ -104,7 +101,7 @@ class M: #Matrix
             f = []
             for m in range(len(nmat.mat[0])): # To move columns in B
                 c = 0
-                for k in range(len(nmat)): # To interate through column elements
+                for k in range(len(nmat)): # To iterate through column elements of B
                     c += self.mat[n][k] * nmat.mat[k][m]        
                 f.append(c)
             final.append(f)
@@ -114,6 +111,9 @@ class M: #Matrix
 
         return M(final)
 
+    def __iter__(self):
+        return iter(self.mat)
+        
     def __repr__(self):
         return  "\n".join([" ".join(map(str,n)) for n in self.mat])
 
